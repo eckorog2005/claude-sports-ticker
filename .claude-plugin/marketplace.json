@@ -1,0 +1,15 @@
+{
+  "name": "claude-sports-ticker",
+  "description": "Live sports scores in a ticker above the Claude Code prompt",
+  "owner": {
+    "name": "Roger Lamb",
+    "url": "https://github.com/eckorog2005"
+  },
+  "plugins": [
+    {
+      "name": "sports-ticker",
+      "source": "./",
+      "description": "A live sports score ticker above the prompt, from ESPN's free scoreboard API"
+    }
+  ]
+}

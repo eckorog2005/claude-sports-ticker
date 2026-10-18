@@ -42,10 +42,10 @@ async function loadConfig($: EngineInterface): Promise<void> {
 
 type Fetched = { text: string } | { failure: string }
 
-// ESPN's Akamai edge refuses Claude Code's own HTTP client with a 403 but serves curl.
+// ESPN's Akamai edge answers 403 to the host's default `Bun/*` User-Agent, so send our own.
 async function fetchText($: EngineInterface, url: string): Promise<Fetched> {
-  const curl = await $.process.run(['curl', '-sS', '--fail', '--max-time', '15', url])
-  return curl.exitCode === 0 ? { text: curl.stdout } : { failure: `curl: ${curl.stderr.trim()}` }
+  const res = await $.http.fetch(url, { headers: { 'User-Agent': 'claude-sports-ticker' } })
+  return res.ok ? { text: res.text } : { failure: `HTTP ${res.status}` }
 }
 
 async function refresh($: EngineInterface): Promise<void> {
@@ -119,17 +119,20 @@ export const register: Register = on => {
     const segments = toSegments(list)
     bandWidth = e.props.bodyColumns
     shownLength = segmentsLength(segments)
+    // Proportional fonts off the terminal fit more than bodyColumns characters; overshoot and let the clip cut it.
+    const windowWidth = e.surface === 'terminal' ? bandWidth : bandWidth * 2
     const visible = config.scroll && shownLength > bandWidth
-      ? windowSegments(segments, await read($, offset), bandWidth)
+      ? windowSegments(segments, await read($, offset), windowWidth)
       : segments
 
+    // The desktop app wraps Text despite wrap="truncate"; non-shrinking items in a clipped row cannot wrap.
     return (
-      <Box>
-        <Text wrap="truncate">
-          {visible.map(s => (
+      <Box height={1} overflow="hidden" flexDirection="row" flexWrap="nowrap">
+        {visible.map(s => (
+          <Box flexShrink={0}>
             <Text color={s.color}>{s.text}</Text>
-          ))}
-        </Text>
+          </Box>
+        ))}
       </Box>
     )
   })

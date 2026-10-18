@@ -13,8 +13,7 @@ NHL STL 2 @ NSH 3 · 2:50 - 3rd   •   NFL HOU @ JAX · 10/18 - 9:30 AM EDT   �
 
 ## Requirements
 
-- Claude Code in a terminal. The desktop app is not supported, because the mod runs `curl`.
-- `curl` on your `PATH` (macOS and most Linux distributions include it)
+- Claude Code in a terminal or the desktop app's Code tab
 
 ## Install
 

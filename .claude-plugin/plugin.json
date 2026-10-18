@@ -1,0 +1,6 @@
+{
+  "name": "sports-ticker",
+  "version": "0.1.0",
+  "description": "A live sports score ticker above the prompt, from ESPN's free scoreboard API",
+  "types": "./types/index.d.ts"
+}

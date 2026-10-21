@@ -2,6 +2,7 @@ import { describe, expect, test } from 'claude-code/testing'
 
 import {
   DEFAULT_CONFIG,
+  fetchFailure,
   parseConfig,
   parseScoreboard,
   scoreboardUrl,
@@ -81,5 +82,16 @@ describe('sports ticker', () => {
       .toEqual(['Final: NFL NYJ 3 @ BUF 7 · Final'])
     expect(scoreChanges(before, [game({ home: { abbr: 'BUF', score: 14 } })], { ...config, teams: ['SEA'] }))
       .toEqual([])
+  })
+})
+
+describe('fetchFailure', () => {
+  test('drops the host prefix and URL so the reason fits the band', () => {
+    const err = new Error('HooksError: sports-ticker: $.http.fetch(https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard): timed out')
+    expect(fetchFailure(err)).toBe('timed out')
+  })
+
+  test('keeps a message it does not recognise', () => {
+    expect(fetchFailure('socket hang up')).toBe('socket hang up')
   })
 })

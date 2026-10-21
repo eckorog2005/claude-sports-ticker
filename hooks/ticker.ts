@@ -37,6 +37,12 @@ export function scoreboardUrl(league: string): string | undefined {
   return path && `https://site.api.espn.com/apis/site/v2/sports/${path}/scoreboard`
 }
 
+// The host prefixes a rejected fetch with the error class, plugin and full URL, which pushes the reason off the band.
+export function fetchFailure(err: unknown): string {
+  const message = err instanceof Error ? err.message : String(err)
+  return message.replace(/^(?:\w*Error: )?(?:[\w-]+: )?\$\.http\.fetch\([^)]*\)[:\s]*/, '') || message
+}
+
 export function parseConfig(text: string): Config {
   const raw = JSON.parse(text) as Partial<Config>
   const notify: Notify[] = ['teams', 'all', 'off']

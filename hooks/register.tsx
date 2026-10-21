@@ -4,6 +4,7 @@ import type { EngineInterface, Register, Timer } from 'claude-code'
 import type { Game } from '../types'
 import {
   DEFAULT_CONFIG,
+  fetchFailure,
   parseConfig,
   parseScoreboard,
   scoreboardUrl,
@@ -59,7 +60,7 @@ async function refresh($: EngineInterface): Promise<void> {
         if ('failure' in got) return { league, failure: got.failure, games: [] as Game[] }
         return { league, failure: undefined, games: parseScoreboard(league, got.text) }
       } catch (err) {
-        return { league, failure: String(err), games: [] as Game[] }
+        return { league, failure: fetchFailure(err), games: [] as Game[] }
       }
     }),
   )
